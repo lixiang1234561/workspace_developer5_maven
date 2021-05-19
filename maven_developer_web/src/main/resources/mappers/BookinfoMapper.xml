@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace指定命名空间,一定要指定-->
+<!--namespace用来引用和dao的映射关系-->
+<mapper namespace="com.ck.Dao.BookinfoDao">
+
+    <resultMap id="bookmap" type="com.ck.Entity.Bookinfo">
+        <result column="bid" property="b_bid"/>
+        <result column="bname" property="b_bname"/>
+        <result column="price" property="b_price"/>
+        <result column="btid" property="b_btid"/>
+        <result column="dtime" property="b_dtime"/>
+        <result column="imgurl" property="b_imgurl"/>
+        <result column="state" property="b_state"/>
+<!--    和图书类型表多对一 -->
+        <association property="booktype" column="btid" select="com.ck.Dao.BooktypeDao.queryidall"></association>
+    </resultMap>
+<select id="querybookinfo" resultMap="bookmap">
+        select * from bookinfo
+    <where>
+        <if test="t_btid != '' and t_btid != null and t_btid !=0">
+            and btid=#{t_btid}
+    </if>
+    <if test="t_btname != '' and t_btname != null">
+            and btname like '%#{t_btname}%'
+    </if>
+</where>
+</select>
+</mapper>

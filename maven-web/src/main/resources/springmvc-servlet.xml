@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans
+		xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+
+	<!--	让注释代码都生效-->
+	<context:component-scan base-package="com.ck.Controller"/>
+	<!--处理spring中的静态资源（可能会让注释失效）-->
+	<mvc:default-servlet-handler></mvc:default-servlet-handler>
+	<!--开启注释-->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<!-- 配置Thymeleaf模板解析器-->
+	<bean id="thymeleaf" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+		<!--	指定前后名-->
+		<property name="prefix" value="/WEB-INF/templates/"></property>
+		<property name="suffix" value=".html"></property>
+		<!--	指定基于哪个模板，这里指定为H5-->
+		<property name="templateMode" value="HTML5"></property>
+		<!--    指定模板编码格式-->
+		<property name="characterEncoding" value="UTF-8"/>
+	</bean>
+	<!-- 配置Thymeleaf模板-->
+	<bean id="engine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+		<property name="templateResolver" ref="thymeleaf"/>
+	</bean>
+	<!-- 配置Thymeleaf视图-->
+	<bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+		<!--	给视图指定thymeleaf模板-->
+		<property name="templateEngine" ref="engine"></property>
+		<!--	给视图指定编码格式-->
+		<property name="characterEncoding" value="UTF-8"/>
+	</bean>
+
+<!--&lt;!&ndash;	配置登录的拦截器&ndash;&gt;-->
+<!--	<mvc:interceptors>-->
+<!--		<mvc:interceptor>-->
+<!--			&lt;!&ndash;		/*：拦截所有&ndash;&gt;-->
+<!--			<mvc:mapping path="/*"/>-->
+<!--			&lt;!&ndash;	指定需要放行的视图（将需要放行的视图 注入 拦截器的String集合）&ndash;&gt;-->
+<!--			<bean class="com.ck.Interceptor.LoginCheckIntercetor">-->
+<!--				&lt;!&ndash;         指定集合&ndash;&gt;-->
+<!--				<property name="strings">-->
+<!--					<list>-->
+<!--						&lt;!&ndash;因为是路径所以要加/&ndash;&gt;-->
+<!--						<value>/page?page=login</value>-->
+<!--						<value>/login</value>-->
+<!--						<value>/queryallcity</value>-->
+<!--						<value>/vipadd</value>-->
+<!--					</list>-->
+<!--				</property>-->
+<!--			</bean>-->
+<!--		</mvc:interceptor>-->
+<!--	</mvc:interceptors>-->
+	<!--配置邮件模板-->
+	<!--引入email文件给value赋值-->
+	<!-- qq邮件授权码:kcbpoudrqpugdjjf-->
+	<context:property-placeholder location="classpath:email.properties"/>
+	<bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${email_host}"/>
+		<property name="javaMailProperties">
+			<props>
+				<!--			设置是否需要身份验证-->
+				<prop key="mail.smtp.auth">${mail_smtp_auth}</prop>
+				<!--			发送超时时间-->
+				<prop key="mail.smtp.timeout">${mail_smtp_timeout}</prop>
+			</props>
+		</property>
+		<!--	电子邮件名,邮件的授权码-->
+		<property name="username" value="${email_from}"/>
+		<property name="password" value="${email_password}"/>
+		<property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+<!--配置文件上传-->
+  <bean id="multiparResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+</beans>
