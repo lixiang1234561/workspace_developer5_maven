@@ -9,6 +9,8 @@
     </plugins>
 
     <mappers>
-        <mapper resource="mappers/EmployeeMapper.xml"/>
+        <mapper resource="mappers/BookinfoMapper.xml"/>
+        <mapper resource="mappers/BooktypeMapper.xml"/>
     </mappers>
+
 </configuration>

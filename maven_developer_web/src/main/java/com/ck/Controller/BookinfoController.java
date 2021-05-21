@@ -4,6 +4,7 @@ import com.ck.Entity.Bookinfo;
 import com.ck.Entity.Booktype;
 import com.ck.Service.BookinfoService;
 import com.ck.Service.BooktypeService;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,7 @@ public class BookinfoController {
 //  更据图书类型id动态查询图书并分页指令
     @RequestMapping("querytypeidall")
 //  从页面获取到第几页,和每页多少数量
-    public String querytypeidall(ModelMap map, String t_btid, String t_btname){
+    public String querytypeidall(ModelMap map, String t_btid, String t_btname,String pagenum){
         List<Booktype> queryall = booktypeService.queryall();
         if(t_btid != "" && t_btid != null){
              map.put("t_btid",t_btid);
@@ -34,11 +35,18 @@ public class BookinfoController {
         if(t_btname != "" && t_btname != null){
             map.put("t_btname",t_btname);
         }
-        PageInfo<Bookinfo> querybookinfo = bookinfoService.querybookinfo(map,1,6);
+        if(pagenum == null || pagenum == "0" || pagenum.equals("0")){
+            pagenum="1";
+        }
+        PageInfo<Bookinfo> querybookinfo = bookinfoService.querybookinfo(map,Integer.valueOf(pagenum),5);
+//      将总页数放入map中
+        map.put("pages",querybookinfo.getPages());
+//      将当前页数放入map中
+        map.put("pagenum",pagenum);
         //将所有图书类型放入map中
         map.put("booktypelist",queryall);
         //动态查询图书与图书类型
-        map.put("booklist", querybookinfo);
+        map.put("booklist", querybookinfo.getList());
         return "p_list";
     }
 //  更据id删除图书

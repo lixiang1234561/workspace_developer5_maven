@@ -3,6 +3,7 @@ package com.ck.Service.imp;
 import com.ck.Dao.BookinfoDao;
 import com.ck.Entity.Bookinfo;
 import com.ck.Service.BookinfoService;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,8 @@ public class BookinfoServiceimp implements BookinfoService {
     public PageInfo<Bookinfo> querybookinfo(Map map, int pagenum, int pagesize){
         PageHelper.startPage(pagenum, pagesize);
         List<Bookinfo> querybookinfo = bookinfoDao.querybookinfo(map);
-//      将分页后的结果进行返回
-        PageInfo<Bookinfo> pagebooklist = new PageInfo<>(querybookinfo);
-        return pagebooklist;
+        PageInfo<Bookinfo> page = new PageInfo<>(querybookinfo);
+        return page;
     }
     public void deleteidbook(int id){
         bookinfoDao.deleteidbook(id);

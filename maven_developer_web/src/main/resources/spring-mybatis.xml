@@ -32,9 +32,9 @@
 		<!--注入数据库的相关信息，在这里称之为数据源-->
 		<property name="dataSource" ref="c3p0"/>
 		<!--方式一：直接注入所有映射文件的路径，mybatis-config.xml不需要了-->
-		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
+<!--		<property name="mapperLocations" value="classpath:mappers/*.xml"/>-->
 		<!--方式二：指定mybatis核心配置文件mybatis-config.xml的路径-->
-<!--		<property name="configLocation" value="classpath:mybatis-config.xml"></property>-->
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
 	</bean>
 
 	<!--2 让spring创建mybatis中dao接口的实现类(代理类)-->

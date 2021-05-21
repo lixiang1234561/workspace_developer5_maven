@@ -7,8 +7,9 @@
 <link rel="stylesheet" type="text/css" href="css/common.css" />
 <link rel="stylesheet" type="text/css" href="css/main.css" />
 <script type="text/javascript" src="js/libs/modernizr.min.js"></script>
-
-<script type="text/javascript">
+	<script type="text/javascript" src="js/libs/jquery-3.1.1.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.validate.js"></script>
+<script>
 	function showPic(e, sUrl) {
 		var x, y;
 		x = e.clientX;
@@ -22,20 +23,6 @@
 		document.getElementById("Layer1").innerHTML = "";
 		document.getElementById("Layer1").style.display = "none";
 	}
-	// 按钮全选中,全选按钮也选中
-	function mytext2(){
-		var o=true;
-		$(":checkbox:gt(0)").each(function(){
-			var youxi=$(this).prop("checked");
-			if(!youxi){
-				$(":checkbox:eq(0)").prop("checked",false);
-				o=false;
-			}
-			if(o){
-				$(":checkbox:eq(0)").prop("checked",true);
-			}
-		});
-	}
 	function delete1(){
 		//获取所有checkbox并循环
 		$(":checkbox:gt(0)").each(function () {
@@ -44,10 +31,10 @@
 			// 判断是否选中进行删除
 			if(xx){
 				//进行循环删除
-				let hi_id = $(this).parent().parent().children("[name='hi_id']").prop("value");
+				let hi_id =$("[name='hi_id']").prop("value");
 				$(this).parent().parent().remove();
 				$.ajax({
-					url:"deleteidbook?id="+b_bid,
+					url:"deleteidbook?id="+hi_id,
 					success:function(data) {
 						if(data != null || data != ""){
 							alert("删除成功")
@@ -140,7 +127,7 @@
 				<form name="myform" id="myform" method="post">
 					<div class="result-title">
 						<div class="result-list">
-							<a id="batchDel" href="javascript:void(0)"><i
+							<a id="batchDel" onclick="delete1()" href="javascript:void(0)"><i
 								class="icon-font"></i>批量删除</a>
 						</div>
 					</div>
@@ -152,7 +139,7 @@
 
 
 							<tr >
-								<th class="tc" width="5%"></th>
+								<th class="tc" width="5%"><input name="id[]" value="" type="checkbox"></th>
 								<th>序号</th>
 								<th>图书名称</th>
 								<th>图书价格</th>
@@ -163,7 +150,7 @@
 							</tr>
 
 							<tr th:each="b:${booklist}">
-								<td class="tc"><input name="id[]" value="" type="checkbox"></td>
+								<td class="tc"><input name="id[]" value="" type="checkbox"><input type="hidden" name="hi_id" th:value="${b.b_bid}"></td>
 								<td th:text="${b.b_bid}"><input name="b_bid" th:value="${b.b_bid}" type="hidden">/td>
 								<td th:text="${b.b_bname}" onmouseout="hiddenPic();" onmousemove="showPic(event,'images/book_img/9787111108078.jpg');"></td>
 								<td th:text="${b.b_price}"></td>
@@ -226,8 +213,14 @@
 							</tr>
 						</table>
 						<div class="list-page">
-							<a href="#">首页</a> <a href="#" onclick="dd()">上一页</a> <a href="querytypeidall">下一页</a> <a
-								href="#">尾页</a> 每页5条记录&nbsp;&nbsp;1/5
+							<a th:href="@{querytypeidall(pagenum=1)}">首页</a> <a th:href="@{querytypeidall(pagenum=${pagenum}-1)}">上一页</a>
+							<span th:if="${pagenum}==${pages}">
+							<a th:href="@{querytypeidall(pagenum=${pagenum})}">下一页</a>
+							</span>
+							<span th:if="${pagenum}<${pages}">
+							<a th:href="@{querytypeidall(pagenum=${pagenum}+1)}">下一页</a>
+							</span>
+							<a th:href="@{querytypeidall(pagenum=${pages})}">尾页</a> 每页5条记录&nbsp;&nbsp;<span  th:text="${pagenum}"  name="pagenum"></span>/<span  th:text="${pages}" name="pages"></span>
 						</div>
 					</div>
 				</form>
